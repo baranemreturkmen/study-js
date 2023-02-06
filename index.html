@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study JS</title>
+    <style>
+        h4{
+            font-size: 18pt;
+            color: blue;
+        }
+    </style>
+    <script type="text/javascript">
+        /*Js özellikleri
+        * i)Functional -> Hatta bizim fonksiyonumuz parametre olarak fonksiyon alıyor yani
+        * higher order function
+        * ii)Asynchronous Function -> setInterval mesela çalıştığında beni bloke etmiyor.
+        * Bir kayıt alıyor içeride ve dönüyor, bana engel olmuyor.
+        * iii)Event-Driven -> Js Engine has Single Execution Thread -> Event Queue var
+        * Eventleri alıyor -> Async olan call back fonksiyonları çağırıyor. Registration var yani.*/
+
+        window.onload= app; /*app function var bunu register et. ONLOAD_EVENT ile tetiklensin
+                               Sayfa render edildiğinde çalışsın.*/
+
+        /*Backend'de ki main stream dillere benzemiyor yapı. Bir app fonksiyonu yazdım. Sayfa
+        * render edildiğinde çalışsın dedim. Ama koda bakınca ben sadece fonksiyonu yazdım.
+        * Backend'de ki gibi app fonksiyonunu hiç biryerde ÇAĞIRMIYORUM!
+        * Farklı bir durum var. setInterval içerisinde parametre olarak yazdığım fonksiyonda
+        * öyle. Sadece yazdım register ettim. Ama hiçbir yerde çağırmadım ben bu fonksiyonu.*/
+        function app(){
+            let counter = 0;
+            let spanCounter=document.querySelector("#counter");
+            /*Her saniyede bir zamana bağlı periyodik işlem yapmak istiyorsam eğer setInterval diye
+            bir built-in fonksiyonumuz var. Her saniyede bir olan şey aslında time out event kuyruğa
+            atılıyor. Ve o event kuyruğa atıldığında register ettiğim call back fonksiyonu register edildi
+            ve bu event'e karşılık bu fonksiyon js engine içerisinde yer alan Single Execution Thread tarafından
+            çalıştırıldı. Ben çağırmadım ama event'i register ettim.
+            */
+            setInterval(function (){ //register ettim. Hangi event'e karşılık? ON_TIMEOUT_EVENT
+                counter++;
+                spanCounter.innerHTML=counter.toString();
+            },1000)//1000 ms -> 1s -> Birinci parametredeki fonksiyonu 1 s'de çalıştır.
+        }
+
+        /*Counterdaki değişiklik ön yüze yansısın istiyorsam Dom Api kullanacağız.
+        * Sayfayı tarayıcı render ettiğinde document objesi oluşturuyor. Document objesi
+        * üzerinde Dom Api aracılığı ile değişiklik yapabiliriz.*/
+
+        /*Null object hatası almak istemiyorsam eğer burası html elementinden sonra çalışmalı.
+        * Daha objenin kendisi dom'da yokken js engine çalışıyor. Kodu ya aşağı taşıyacaksın
+        * yada tüm dom yüklendikten sonra bu kodun çalışmasını sağlayacak yapıyı kullanmamamız
+        * lazım. -> window.onload*/
+
+        /*Fonksiyonu değişken olarak tanımlarsan timeout_callback = function(){...}
+        * Fonksiyonu kodun yukarıdan aşağıya akışı dahilinde değişken tanımladığım an elde edersiniz.
+        * Bu da hataya sebebiyet verebilir. Ama function timeout_callback(){...} şeklinde tanımlarsam
+        * fonksiyon akıştan bağımsız akışın en yukarasındaymışçasına çalışır.*/
+
+        /*Style(CSS)-HTML-JS 3 ayrı teknoloji separational concern. Tek bir dokuman içerisinde
+        * oluşturduk. Uygulama performansı için güzel. Tarayıcı tek bir dosya istiyor ve içinde
+        * herşey var ama bu basit bir örnek. Gerçek projede bunları dağıtmam lazım.
+        * Html içerisinde <style> @Import "counter.css";</style>
+          <script type="text/javascript" src="counter.js"><script>
+          * Ama bu durum isteğe bağlı. Dosyaları 3'e ayırsan bile Java'daki yada C#'da ki
+          * gibi bir zorunlu klasör hiyerarşisi yok encapsulation yok. Bu durumda bu geliştirici
+          * açısından zor bir durum kendi hiyerarşisini oluşturmak zorunda. Uzaktaki sunucuay bağlanırken
+          * latency vs. açısından performans önemli. Kendi hiyerarşimi oluştursam bile webpack ile tıpkı
+          * buradaki gibi tüm herşeyi tek bir dosyaya sıkıştırabilirim.*/
+
+        /*Mesela fonksiyon ismine anlaşılır olsun diye uzun uzun isimler veriyorsun ama bu webpack'in
+        * tek bir dosyaya dönüştürme işini uzunlaştırıyor. Bundan dolayı da ön yüze yansıma süresi artıyor.
+        * Js'de development için güzel olan şeyler Production için kötü oluyor çünkü js'de javadaki yada
+        * c#'da ki gibi ara bir format yok. Java'da bu byte code'a dönüşüyor ama Js'de kaynak kod olduğu gibi
+        * sunucudan tarayıcıya taşınıyor. Geliştirme için yapılan iyi işler production'da ters etki yarattığı
+        * için webpack tarzı uygulamalar kullanılıyor.*/
+    </script>
+</head>
+<body>
+    <div><h4>Counter: <span id="counter">0</span></h4></div>
+</body>
+</html>
